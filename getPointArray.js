@@ -50,7 +50,7 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 		if(y1>y2){//需要2个点，3条线
 			var result1 = {x:x1,y:(y1+y2)/2};	
 			var result2 = {x:x2,y:(y1+y2)/2};	
-			result2.push(result1,result2);
+			results.push(result1,result2);
 		}else{//需要4个点，5条线
 			var result1 = {x:x1,y:y1-10};	
 			var result2 = {x:(x1+x2)/2,y:y1-10};
