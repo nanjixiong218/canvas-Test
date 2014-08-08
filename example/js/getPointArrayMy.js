@@ -3,11 +3,13 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 	//按边分16种情况：N,S,W,E代表北，南，西，东
 	var code = direct1+direct2;
 	var results = [];
+	results.push(begin1);
 	var x1=begin1.x,
 		x2=begin2.x,
 		y1=begin1.y,
 		y2=begin2.y;
 
+	var offset=20;
 	switch(code){//一共16中组合
 		case 'NN':NN();break;	
 		case 'NS':NS();break;	
@@ -21,7 +23,7 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 
 		case 'WN':WN();break;	
 		case 'WS':WS();break;	
-		case 'wW':WW();break;	
+		case 'WW':WW();break;	
 		case 'WE':WE();break;	
 
 		case 'EN':EN();break;	
@@ -29,7 +31,7 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 		case 'EW':EW();break;	
 		case 'EE':EE();break;	
 	}
-	
+	results.push(begin2);	
 	return results;
 
 	//判断终点在起始点的位置
@@ -37,12 +39,12 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 	//N方向为起始点
 	function NN(){
 		if(y1<y2){
-			var result1 = {x:x1,y:y1-10};	
-			var result2 = {x:x2,y:y1-10};	
+			var result1 = {x:x1,y:y1-offset};	
+			var result2 = {x:x2,y:y1-offset};	
 			results.push(result1,result2);
 		}else{
-			var result1 = {x:x1,y:y2-10};	
-			var result2 = {x:x2,y:y2-10};	
+			var result1 = {x:x1,y:y2-offset};	
+			var result2 = {x:x2,y:y2-offset};	
 			results.push(result1,result2);
 		}	
 	}
@@ -52,10 +54,10 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result2 = {x:x2,y:(y1+y2)/2};	
 			results.push(result1,result2);
 		}else{//需要4个点，5条线
-			var result1 = {x:x1,y:y1-10};	
-			var result2 = {x:(x1+x2)/2,y:y1-10};
-			var result3 = {x:(x1+x2)/2,y:y2+10};
-			var result4 = {x:x2,y:y2+10};
+			var result1 = {x:x1,y:y1-offset};	
+			var result2 = {x:(x1+x2)/2,y:y1-offset};
+			var result3 = {x:(x1+x2)/2,y:y2+offset};
+			var result4 = {x:x2,y:y2+offset};
 			results.push(result1,result2,result3,result4);
 		}	
 	}
@@ -65,15 +67,15 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 				var result1 = {x:x1,y:y2};	
 				results.push(result1);
 			}else{//需要3个点，4条线
-				var result1 = {x:x1,y:y1-10};			
-				var result2 = {x:x2-10,y:y1-10};
-				var result3 = {x:x2-10,y:y2};
+				var result1 = {x:x1,y:y1-offset};			
+				var result2 = {x:x2-offset,y:y1-offset};
+				var result3 = {x:x2-offset,y:y2};
 				results.push(result1,result2,result3);
 			}
 		}else{
-			var result1 = {x:x1,y:y1-10};	
-			var result2 = {x:x2-10,y:y1-10};
-			var result3 = {x:x2-10,y:y2};
+			var result1 = {x:x1,y:y1-offset};	
+			var result2 = {x:x2-offset,y:y1-offset};
+			var result3 = {x:x2-offset,y:y2};
 			results.push(result1,result2,result3);
 			
 		}	
@@ -83,9 +85,9 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x1,y:y2};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1,y:y1-10};	
-			var result2 = {x:x2+10,y:y1-10};
-			var result3 = {x:x2+10,y:y2};
+			var result1 = {x:x1,y:y1-offset};	
+			var result2 = {x:x2+offset,y:y1-offset};
+			var result3 = {x:x2+offset,y:y2};
 			results.push(result1,result2,result3);
 		}
 	}
@@ -95,24 +97,24 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 		if(y1<y2){
 			var result1 = {x:x1,y:(y1+y2)/2};	
 			var result2 = {x:x2,y:(y1+y2)/2};	
-			result2.push(result1,result2);
+			results.push(result1,result2);
 		}else{
-			var result1 = {x:x1,y:y1+10};
-			var result2 = {x:(x1+x2)/2,y:y1+10};
-			var result3 = {x:(x1+x2)/2,y:y2-10};
-			var result4 = {x:x2,y:y2-10};
+			var result1 = {x:x1,y:y1+offset};
+			var result2 = {x:(x1+x2)/2,y:y1+offset};
+			var result3 = {x:(x1+x2)/2,y:y2-offset};
+			var result4 = {x:x2,y:y2-offset};
 			results.push(result1,result2,result3,result4);
 		}	
 	}
 	function SS(){
 
 		if(y1>y2){
-			var result1 = {x:x1,y:y1-10};	
-			var result2 = {x:x2,y:y1-10};	
+			var result1 = {x:x1,y:y1+offset};	
+			var result2 = {x:x2,y:y1+offset};	
 			results.push(result1,result2);
 		}else{
-			var result1 = {x:x1,y:y2-10};	
-			var result2 = {x:x2,y:y2-10};	
+			var result1 = {x:x1,y:y2+offset};	
+			var result2 = {x:x2,y:y2+offset};	
 			results.push(result1,result2);
 		}	
 	}
@@ -121,9 +123,9 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x1,y:y2};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1,y:y1+10};	
-			var result2 = {x:x2-10,y:y1+10};
-			var result3 = {x:x2-10,y:y2};
+			var result1 = {x:x1,y:y1+offset};	
+			var result2 = {x:x2-offset,y:y1+offset};
+			var result3 = {x:x2-offset,y:y2};
 			results.push(result1,result2,result3);
 		}
 	}
@@ -132,9 +134,9 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x1,y:y2};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1,y:y1+10};	
-			var result2 = {x:x2+10,y:y1+10};
-			var result3 = {x:x2+10,y:y2};
+			var result1 = {x:x1,y:y1+offset};	
+			var result2 = {x:x2+offset,y:y1+offset};
+			var result3 = {x:x2+offset,y:y2};
 			results.push(result1,result2,result3);
 		}
 	}
@@ -145,9 +147,9 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x2,y:y1};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1-10,y:y1};	
-			var result2 = {x:x1-10,y:y2-10};
-			var result3 = {x:x2,y:y2-10};
+			var result1 = {x:x1-offset,y:y1};	
+			var result2 = {x:x1-offset,y:y2-offset};
+			var result3 = {x:x2,y:y2-offset};
 			results.push(result1,result2,result3);
 		}
 	}
@@ -157,20 +159,20 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x2,y:y1};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1-10,y:y1};	
-			var result2 = {x:x1-10,y:y2+10};
-			var result3 = {x:x2,y:y2+10};
+			var result1 = {x:x1-offset,y:y1};	
+			var result2 = {x:x1-offset,y:y2+offset};
+			var result3 = {x:x2,y:y2+offset};
 			results.push(result1,result2,result3);
 		}
 	}
 	function WW(){
 		if(x1>x2){
-			var result1 = {x:x2-10,y:y1};	
-			var result2 = {x:x2-10,y:y2};	
+			var result1 = {x:x2-offset,y:y1};	
+			var result2 = {x:x2-offset,y:y2};	
 			results.push(result1,result2);
 		}else{
-			var result1 = {x:x1-10,y:y1};	
-			var result2 = {x:x1-10,y:y2};	
+			var result1 = {x:x1-offset,y:y1};	
+			var result2 = {x:x1-offset,y:y2};	
 			results.push(result1,result2);
 		}	
 			
@@ -180,12 +182,12 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 		if(x1>x2){//需要2个点，3条线
 			var result1 = {x:(x1+x2)/2,y:y1};	
 			var result2 = {x:(x1+x2)/2,y:y2};	
-			result2.push(result1,result2);
+			results.push(result1,result2);
 		}else{//需要4个点，5条线
-			var result1 = {x:x1-10,y:y1};	
-			var result2 = {x:x1-10,y:(y1+y2)/2};
-			var result3 = {x:x2+10,y:(y1+y2)/2};
-			var result4 = {x:x2+10,y:y2};
+			var result1 = {x:x1-offset,y:y1};	
+			var result2 = {x:x1-offset,y:(y1+y2)/2};
+			var result3 = {x:x2+offset,y:(y1+y2)/2};
+			var result4 = {x:x2+offset,y:y2};
 			results.push(result1,result2,result3,result4);
 		}	
 	}
@@ -196,32 +198,32 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 			var result1 = {x:x2,y:y1};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1+10,y:y1};	
-			var result2 = {x:x1+10,y:y2-10};
-			var result3 = {x:x2,y:y2-10};
+			var result1 = {x:x1+offset,y:y1};	
+			var result2 = {x:x1+offset,y:y2-offset};
+			var result3 = {x:x2,y:y2-offset};
 			results.push(result1,result2,result3);
 		}
 	}
 	function ES(){
 	
-		if(x1<x2&&y1<y2){
+		if(x1<x2&&y1>y2){
 			var result1 = {x:x2,y:y1};	
 			results.push(result1);
 		}else{
-			var result1 = {x:x1+10,y:y1};	
-			var result2 = {x:x1+10,y:y2+10};
-			var result3 = {x:x2,y:y2+10};
+			var result1 = {x:x1+offset,y:y1};	
+			var result2 = {x:x1+offset,y:y2+offset};
+			var result3 = {x:x2,y:y2+offset};
 			results.push(result1,result2,result3);
 		}
 	}
 	function EE(){
 		if(x1>x2){
-			var result1 = {x:x2-10,y:y1};	
-			var result2 = {x:x2-10,y:y2};	
+			var result1 = {x:x1+offset,y:y1};	
+			var result2 = {x:x1+offset,y:y2};	
 			results.push(result1,result2);
 		}else{
-			var result1 = {x:x1-10,y:y1};	
-			var result2 = {x:x1-10,y:y2};	
+			var result1 = {x:x2+offset,y:y1};	
+			var result2 = {x:x2+offset,y:y2};	
 			results.push(result1,result2);
 		}	
 			
@@ -231,12 +233,12 @@ function getPointArray(mid1,mid2,begin1,begin2,direct1,direct2){
 		if(x1<x2){//需要2个点，3条线
 			var result1 = {x:(x1+x2)/2,y:y1};	
 			var result2 = {x:(x1+x2)/2,y:y2};	
-			result2.push(result1,result2);
+			results.push(result1,result2);
 		}else{//需要4个点，5条线
-			var result1 = {x:x1+10,y:y1};	
-			var result2 = {x:x1+10,y:(y1+y2)/2};
-			var result3 = {x:x2-10,y:(y1+y2)/2};
-			var result4 = {x:x2-10,y:y2};
+			var result1 = {x:x1+offset,y:y1};	
+			var result2 = {x:x1+offset,y:(y1+y2)/2};
+			var result3 = {x:x2-offset,y:(y1+y2)/2};
+			var result4 = {x:x2-offset,y:y2};
 			results.push(result1,result2,result3,result4);
 		}	
 	}

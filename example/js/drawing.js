@@ -1,6 +1,9 @@
 var myDraw = (function(){
 	var instance;
 	function init(id){
+        //这里我创建了一个二维数组保存页面上的所有像素点，
+        // 这样就可以用p[1][2]这样的形式来访问某个点了，而不需要用对象的形式
+        //但是这样会不会性能很差？
 		this.p = [];
 		for(var i = 0; i <= 1000; i++){
 			this.p[i] = [];
