@@ -5,12 +5,14 @@
     <title></title>
     <style type="text/css">
         body{
+			text-align:center;
         }
         #controls{
+			display:inline-block;//让它居中用的
             position: absolute;
+			margin:0 auto;
             background-color: rgba(0,0,100,0.4);
-            left:25px;
-            top:25px;
+			width:600px;
         }
         #mydrawing{
             border: 1px solid #000;
@@ -18,7 +20,11 @@
             cursor:pointer;
             width:600px;
             height:600px;
-            margin: 10px 0 0 10px;//canvas用 0 auto无法居中Todo
+			margin: 10px 0 0 10px;
+			/*
+			* canvas用 0 auto无法居中Todo,canvas应该算是内敛元素，或者inline-block
+			* 把body设置为text-align：center就居中了
+			*/
             -webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);//这最后如果不加分号，浏览器居然也不认
             -moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
             box-shadow:4px 4px 8px rgba(0,0,0,0.5);
