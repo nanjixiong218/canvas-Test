@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        #controls{
+            position: absolute;
+            background-color: rgba(0,0,100,0.4);
+            left:25px;
+            top:25px;
+        }
+        #mydrawing{
+            border: 1px solid #000;
+            background-color: #fff;
+            cursor:pointer;
+            margin: 10px 0 0 10px;
+            -webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);//这最后如果不加分号，浏览器居然也不认
+            -moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+            box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+<div id="controls">
+    <label for="stroke-color">StrokeColor:</label>
+    <select id="stroke-color">
+        <option selected="selected" value="red">red</option>
+        <option value="blue">blue</option>
+        <option value="green">green</option>
+        <option value="yellow">yellow</option>
+    </select>
+    <label for="guidewire">GuideWire:</label>
+    <input id="guidewire" type="checkbox" checked value="1"/>
+    <button id="clearAll" value="Clear">Clear</button>
+</div>
+
+<canvas id="mydrawing" width="600" height="600">
+
+</canvas>
+</body>
+<script type="text/javascript" src="js/drawing/drawing.js"></script>
+<script type="text/javascrip">
+    window.onload = function(){
+
+
+    }
+</script>
+</html>
