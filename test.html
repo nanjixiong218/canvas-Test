@@ -21,13 +21,19 @@
                 //context.lineTo(100,500);
                 context.arcTo(100,100,120,100,20);
                 context.stroke();
-
+                context.beginPath();
+                context.moveTo(300,300);
+                context.lineTo(600,300);
+                context.lineTo(600,600);
+                context.lineTo(300,600);
+                context.lineTo(300,300);
+                context.stroke();
             }
 		</script>
 	</head>
 	<body>
 
-		<canvas id="mycanvas" width="1000px" height="600px"></canvas>
+		<canvas id="mycanvas" width="1000px" height="700px"></canvas>
 
 	</body>
 </html>

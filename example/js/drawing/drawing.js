@@ -124,14 +124,49 @@ function drawDashLine(context,x1,y1,x2,y2,dashLenth){
     }
     context.stroke();
 }
+//画方向为逆时针的矩形：strokeRect和rect的路径方向都为顺时针，不像arc有个参数可以控制
+function drawRectPath(context,x,y,width,height,isRight){
+    context.beginPath();
+    if(isRight){
+        context.moveTo(x,y);
+        context.lineTo(x+width,y);
+        context.lineTo(x+width,y+height);
+        context.lineTo(x,y+height);
+    }else{
+        context.rect(x,y,width,height);
+    }
+    context.closePath();
+}
+//画矩形
+function drawRect(){
+    drawRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,true);
+    context.stroke();
+}
 
+//画圆角矩形路径
+function roundedRectPath(context, x, y, width, height, cornerRadius){
+    context.beginPath();
+    context.moveTo(x+cornerRadius,y);
+    context.arcTo(x+width, y, x+width, y+height, cornerRadius);
+    context.arcTo(x+width, y+height, x, y+height, cornerRadius);
+    context.arcTo(x, y+height, x, y,cornerRadius);
+    context.arcTo(x, y, x+width ,y ,cornerRadius);
+    context.closePath();
+}
+//画圆角矩形:书上有一个方法，
+// 太难看了写的，也就是可以从任意位置，向任意方向开始罢了，api不好用，又不好理解，不知道为什么它要那么写
+function drawRoundedRect(){
+    roundedRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,10)
+    context.stroke();
+}
 //画橡皮筋内容
 function drawRubberBandShape(loc){
     context.save();
 
     context.strokeStyle = strokeColorSelect.value;
     //drawPolygon(loc);
-    drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y,5);
+    //drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y,5);
+    drawRoundedRect();
     context.restore();
 }
 //更新橡皮筋
