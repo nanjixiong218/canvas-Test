@@ -6,7 +6,7 @@ var canvas = document.getElementById('mydrawing');
 var context = canvas.getContext('2d');
 //dom
 var clearBtn = document.getElementById("clearAll");
-var strokeSelect = document.getElementById("stroke-color");
+var strokeColorSelect = document.getElementById("stroke-color");
 var guidewire = document.getElementById("guidewire");
 
 drawGrid('lightgray',10,10);
@@ -15,14 +15,16 @@ drawGrid('lightgray',10,10);
 var drawingSurfaceImageData,
     mousedown = {},
     rubberbandRect = {},
-    dragging = false,
-    guidewires = guidewire.checked;
+    dragging = false;
+
+
 
 function init () {
 
 }
 //绘制背景表格
 function drawGrid (color,stepx,stepy) {
+    context.beginPath();//如果没有这句，clear的时候会把最后一条线画出来
     context.save();
     context.strokeStyle = color;
     for(var i = stepx+0.5;i<canvas.width;i+=stepx){
@@ -76,15 +78,7 @@ function restoreDrawingSurface () {
     context.putImageData(drawingSurfaceImageData,0,0)
 }
 
-//events
-canvas.onmousedown = function (e){
-    var loc = windowToCanvas(e.clientX, e.clientY);
-    e.preventDefault();
-    saveDrawingSurface();
-    mousedown.x = loc.x;
-    mousedown.y = loc.y;
-    dragging = true;
-}
+
 //画橡皮筋辅助边框
 function updateRubberBandRect(loc){
     var width = Math.abs(loc.x - mousedown.x);
@@ -100,31 +94,49 @@ function updateRubberBandRect(loc){
 }
 //画橡皮筋内容
 function drawRubberBandShape(loc){
+    context.save();
+
+    context.strokeStyle = strokeColorSelect.value;
     context.beginPath();
     context.moveTo(mousedown.x,mousedown.y);
     context.lineTo(loc.x,loc.y);
     context.stroke();
+    context.restore();
 }
 //更新橡皮筋
 function updateRubberBand(loc){
     updateRubberBandRect(loc);
     drawRubberBandShape(loc);
 }
+//events
+canvas.onmousedown = function (e){
+    var loc = windowToCanvas(e.clientX, e.clientY);
+    e.preventDefault();
+    saveDrawingSurface();
+    mousedown.x = loc.x;
+    mousedown.y = loc.y;
+    dragging = true;
+};
 
 canvas.onmousemove = function (e) {
     var loc = windowToCanvas(e.clientX, e.clientY);
-
-
     if(dragging){
         e.preventDefault();
         restoreDrawingSurface();
-        drawGuidewires(loc.x,loc.y);
+        if(guidewire.checked){
+            drawGuidewires(loc.x,loc.y);
+        }
         updateRubberBand(loc);
     }
-}
+};
 canvas.onmouseup = function (e){
     loc = windowToCanvas(e.clientX, e.clientY);
     restoreDrawingSurface();
     updateRubberBand(loc);
     dragging = false;
-}
+};
+
+clearBtn.onclick = function (e){
+    context.clearRect(0,0,canvas.width,canvas.height);
+    drawGrid('lightgray',10,10);
+};
