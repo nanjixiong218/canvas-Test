@@ -92,15 +92,46 @@ function updateRubberBandRect(loc){
     rubberbandRect.x = point.x;
     rubberbandRect.y = point.y;
 }
+//画直线
+function drawingLine(){
+    context.beginPath();
+    context.moveTo(mousedown.x,mousedown.y);
+    context.lineTo(loc.x,loc.y);
+    context.stroke();
+}
+//画多边形
+function drawPolygon(loc){
+    var radius = Math.sqrt(Math.pow((loc.x - mousedown.x),2)+Math.pow((loc.y-mousedown.y),2));
+    var polygon = new Polygon(loc.x,loc.y,radius,4,0,"red","blue",true);
+    polygon.stroke(context);
+}
+/**
+ *画虚线
+ *
+ */
+
+function drawDashLine(context,x1,y1,x2,y2,dashLenth){
+    dashLenth = dashLenth ? dashLenth : 5;
+    var xLength = Math.abs(x2 - x1);
+    var yLength = Math.abs(y2 - y1);
+    var deltaX = x2 - x1;
+    var deltaY = y2 - y1;
+    var dashLineLength = Math.sqrt(Math.pow(xLength,2)+Math.pow(xLength,2));
+    var dashNum = Math.floor(dashLineLength/dashLenth);
+    context.beginPath();
+    for(var i = 0 ,length = dashNum ;i<length ;i++){
+        context[ i%2 == 0 ? 'moveTo':'lineTo'](x1+(deltaX/dashNum)*i,y1+(deltaY/dashNum)*i);
+    }
+    context.stroke();
+}
+
 //画橡皮筋内容
 function drawRubberBandShape(loc){
     context.save();
 
     context.strokeStyle = strokeColorSelect.value;
-    context.beginPath();
-    context.moveTo(mousedown.x,mousedown.y);
-    context.lineTo(loc.x,loc.y);
-    context.stroke();
+    //drawPolygon(loc);
+    drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y,5);
     context.restore();
 }
 //更新橡皮筋
