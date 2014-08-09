@@ -85,23 +85,30 @@ canvas.onmousedown = function (e){
     mousedown.y = loc.y;
     dragging = true;
 }
-//画橡皮筋内容
-function drawRubberBandRect(loc){
+//画橡皮筋辅助边框
+function updateRubberBandRect(loc){
     var width = Math.abs(loc.x - mousedown.x);
     var height = Math.abs(loc.y - mousedown.y);
     var point = {
         x: (loc.x - mousedown.x)>0?mousedown.x:loc.x,
         y: (loc.y - mousedown.y)>0?mousedown.y:loc.y
-    }
-    context.strokeRect(point.x,point.y,width,height);
+    };
+    rubberbandRect.width = width;
+    rubberbandRect.height = height;
+    rubberbandRect.x = point.x;
+    rubberbandRect.y = point.y;
 }
-
-function drawRubber(loc){
+//画橡皮筋内容
+function drawRubberBandShape(loc){
     context.beginPath();
     context.moveTo(mousedown.x,mousedown.y);
     context.lineTo(loc.x,loc.y);
     context.stroke();
-    drawRubberBandRect(loc);
+}
+//更新橡皮筋
+function updateRubberBand(loc){
+    updateRubberBandRect(loc);
+    drawRubberBandShape(loc);
 }
 
 canvas.onmousemove = function (e) {
@@ -112,12 +119,12 @@ canvas.onmousemove = function (e) {
         e.preventDefault();
         restoreDrawingSurface();
         drawGuidewires(loc.x,loc.y);
-        drawRubber(loc);
+        updateRubberBand(loc);
     }
 }
 canvas.onmouseup = function (e){
     loc = windowToCanvas(e.clientX, e.clientY);
     restoreDrawingSurface();
-    drawRubber(loc);
+    updateRubberBand(loc);
     dragging = false;
 }
