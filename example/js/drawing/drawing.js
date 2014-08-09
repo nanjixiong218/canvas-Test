@@ -8,6 +8,10 @@ var context = canvas.getContext('2d');
 var clearBtn = document.getElementById("clearAll");
 var strokeColorSelect = document.getElementById("stroke-color");
 var guidewire = document.getElementById("guidewire");
+var editingBtn = document.getElementById("editing");
+
+var editing = false;
+var polygons = [];
 
 drawGrid('lightgray',10,10);
 
@@ -15,7 +19,9 @@ drawGrid('lightgray',10,10);
 var drawingSurfaceImageData,
     mousedown = {},
     rubberbandRect = {},
-    dragging = false;
+    dragging = false,
+    draggingOffX,
+    draggingOffY;
 
 
 
@@ -102,8 +108,11 @@ function drawingLine(){
 //画多边形
 function drawPolygon(loc){
     var radius = Math.sqrt(Math.pow((loc.x - mousedown.x),2)+Math.pow((loc.y-mousedown.y),2));
-    var polygon = new Polygon(loc.x,loc.y,radius,4,0,"red","blue",true);
+    var polygon = new Polygon(loc.x,loc.y,radius,8,0,"red","blue",true);
     polygon.stroke(context);
+    if(!dragging){
+        polygons.push(polygon);
+    }
 }
 /**
  *画虚线
@@ -164,9 +173,9 @@ function drawRubberBandShape(loc){
     context.save();
 
     context.strokeStyle = strokeColorSelect.value;
-    //drawPolygon(loc);
+    drawPolygon(loc);
     //drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y,5);
-    drawRoundedRect();
+    //drawRoundedRect();
     context.restore();
 }
 //更新橡皮筋
@@ -174,35 +183,99 @@ function updateRubberBand(loc){
     updateRubberBandRect(loc);
     drawRubberBandShape(loc);
 }
+
+//画存储列表中的所有图形
+function drawPolygons(){
+    polygons.forEach(function(polygon){
+        polygon.stroke(context);
+    });
+};
+//draggingstart
+function startDragging(loc){
+    saveDrawingSurface();
+    mousedown.x = loc.x;
+    mousedown.y = loc.y;
+}
+//开始拖拽，设置拖拽样式
+function startEditing (){
+    canvas.style.cursor = 'pointer';
+    editing = true;
+}
+//结束拖拽，设置样式
+function stopEditing (){
+    canvas.style.cursor = 'crosshair';
+    editing =false;
+}
 //events
 canvas.onmousedown = function (e){
     var loc = windowToCanvas(e.clientX, e.clientY);
     e.preventDefault();
-    saveDrawingSurface();
-    mousedown.x = loc.x;
-    mousedown.y = loc.y;
-    dragging = true;
+    if(editing){
+        polygons.forEach(function(polygon){
+            polygon.createPath(context);
+            if(context.isPointInPath(loc.x,loc.y)){
+                startDragging(loc);
+                dragging = polygon;
+                //偏移计算，mousemove的时候计算不断移动poly的位置时需要保持着偏移进行移动
+                draggingOffX = loc.x - polygon.x;
+                draggingOffY = loc.y - polygon.y;
+                return;
+            }
+        });
+    }else{
+        startDragging(loc);
+        dragging = true;
+    }
 };
 
 canvas.onmousemove = function (e) {
     var loc = windowToCanvas(e.clientX, e.clientY);
-    if(dragging){
-        e.preventDefault();
+    e.preventDefault();
+    if(editing && dragging) {
+
+        /*不能这样实现的原因就是，无法把被拖动的图像去掉
         restoreDrawingSurface();
-        if(guidewire.checked){
-            drawGuidewires(loc.x,loc.y);
+        dragging.x = loc.x - draggingOffX;
+        dragging.y = loc.y - draggingOffY;
+        dragging.stroke(context);
+        */
+        //TODO这种实现的前提是所有图形都保存在列表中了，可是直线和随便画的点，线并没有保存在图形中，就会消失
+        dragging.x = loc.x - draggingOffX;
+        dragging.y = loc.y - draggingOffY;
+        context.clearRect(0,0,canvas.width,canvas.height);
+        drawGrid('lightgray',10,10);
+        drawPolygons();
+    }else{
+        if(dragging){
+            restoreDrawingSurface();
+            updateRubberBand(loc);
+            if(guidewire.checked) {
+                drawGuidewires(loc.x, loc.y);
+            }
         }
-        updateRubberBand(loc);
     }
 };
 canvas.onmouseup = function (e){
     loc = windowToCanvas(e.clientX, e.clientY);
-    restoreDrawingSurface();
-    updateRubberBand(loc);
     dragging = false;
+    if(editing){
+    }else{
+        restoreDrawingSurface();
+        updateRubberBand(loc);
+    }
 };
 
 clearBtn.onclick = function (e){
     context.clearRect(0,0,canvas.width,canvas.height);
     drawGrid('lightgray',10,10);
+};
+editingBtn.onclick = function (e){
+    if(editing){
+        stopEditing();
+        this.innerText = 'startEditing';
+    }else{
+        startEditing();
+        this.innerHTML = 'stopEditing';
+    }
+
 };
