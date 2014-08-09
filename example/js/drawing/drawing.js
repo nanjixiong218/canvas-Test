@@ -85,6 +85,24 @@ canvas.onmousedown = function (e){
     mousedown.y = loc.y;
     dragging = true;
 }
+//画橡皮筋内容
+function drawRubberBandRect(loc){
+    var width = Math.abs(loc.x - mousedown.x);
+    var height = Math.abs(loc.y - mousedown.y);
+    var point = {
+        x: (loc.x - mousedown.x)>0?mousedown.x:loc.x,
+        y: (loc.y - mousedown.y)>0?mousedown.y:loc.y
+    }
+    context.strokeRect(point.x,point.y,width,height);
+}
+
+function drawRubber(loc){
+    context.beginPath();
+    context.moveTo(mousedown.x,mousedown.y);
+    context.lineTo(loc.x,loc.y);
+    context.stroke();
+    drawRubberBandRect(loc);
+}
 
 canvas.onmousemove = function (e) {
     var loc = windowToCanvas(e.clientX, e.clientY);
@@ -94,19 +112,12 @@ canvas.onmousemove = function (e) {
         e.preventDefault();
         restoreDrawingSurface();
         drawGuidewires(loc.x,loc.y);
-        context.beginPath();
-        context.moveTo(mousedown.x,mousedown.y);
-        context.lineTo(loc.x,loc.y);
-        context.stroke();
+        drawRubber(loc);
     }
 }
 canvas.onmouseup = function (e){
     loc = windowToCanvas(e.clientX, e.clientY);
     restoreDrawingSurface();
-    context.beginPath();
-    context.moveTo(mousedown.x,mousedown.y);
-    context.lineTo(loc.x,loc.y);
-    context.stroke();
+    drawRubber(loc);
     dragging = false;
-
 }
