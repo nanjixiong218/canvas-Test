@@ -41,9 +41,36 @@
         <option value="green">green</option>
         <option value="yellow">yellow</option>
     </select>
-    <label for="guidewire">GuideWire:</label>
+    <label for="fill-color">StrokeColor:</label>
+    <select id="fill-color">
+        <option selected="selected" value="red">red</option>
+        <option value="blue">blue</option>
+        <option value="green">green</option>
+        <option value="yellow">yellow</option>
+    </select>
+    <label for="sides">多边形变数:</label>
+    <select id="sides">
+        <option selected="selected" value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+    </select>
+
+    <label for="guidewire">导引线:</label>
     <input id="guidewire" type="checkbox"  value="1"/>
-    <button id="clearAll" value="Clear">Clear</button>
+    <label for="dash">虚线:</label>
+    <input id="dash" type="checkbox"  value="1"/>
+    <label for="rounded">圆角:</label>
+    <input id="rounded" type="checkbox"  value="1"/>
+    <button id="clearAll" value="Clear">清空画板</button>
+
+    <button id="pen">画笔</button>
+    <button id="line">直线</button>
+    <button id="rect">矩形</button>
+    <button id="erase" value="edit">橡皮擦</button>
+    <button id="polygon" value="edit">画多边形</button>
     <button id="editing" value="edit">startDragging</button>
 </div>
 

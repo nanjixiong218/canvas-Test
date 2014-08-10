@@ -4,23 +4,48 @@
 
 var canvas = document.getElementById('mydrawing');
 var context = canvas.getContext('2d');
-//dom
+//获取控制控件的dom元素
 var clearBtn = document.getElementById("clearAll");
-var strokeColorSelect = document.getElementById("stroke-color");
-var guidewire = document.getElementById("guidewire");
-var editingBtn = document.getElementById("editing");
+//模式转换控件btn
 
-var editing = false;
-var polygons = [];
+var eraseBtn = document.getElementById("erase");
+var polygonBtn = document.getElementById("polygon");
+var penBtn = document.getElementById("pen");
+var lineBtn = document.getElementById("line");
+var editingBtn = document.getElementById("editing");
+//样式相关设置dom
+var strokeColorSelect = document.getElementById("stroke-color");
+var fillColorSelect = document.getElementById("fill-color");
+var guidewire = document.getElementById("guidewire");
+var dash = document.getElementById("dash");
+var rounded = document.getElementById("rounded");
+var sides = document.getElementById("sides");
+
+
+
+
+//模式标记状态字段初始化，一开始是画笔状态
+var drawingModule = 'penning';
+//有了drawingModule变量就不需要下面的了吧
+var penning = true,
+    editing = false,
+    lining = false,
+    erasing = false,
+    polygonning =false;
+//上面的状态只能有一个为true，下面的dragging是在任何状态下都可以为true的
+//状态
+var dragging = false;
+
 
 drawGrid('lightgray',10,10);
 
-//other
+//辅助变量
+
+var polygons = [];
 var drawingSurfaceImageData,
     mousedown = {},
-    rubberbandRect = {},
-    dragging = false,
-    draggingOffX,
+    rubberbandRect = {},//橡皮筋辅助边框数据
+    draggingOffX,//多边形移动时，多边形中心点于mousedown的点的偏移
     draggingOffY;
 
 
@@ -28,7 +53,12 @@ var drawingSurfaceImageData,
 function init () {
 
 }
-//绘制背景表格
+/**
+ * 绘制北京表格线
+ * @param color
+ * @param stepx：水平表格间距
+ * @param stepy：垂直表格间距
+ */
 function drawGrid (color,stepx,stepy) {
     context.beginPath();//如果没有这句，clear的时候会把最后一条线画出来
     context.save();
@@ -43,30 +73,31 @@ function drawGrid (color,stepx,stepy) {
         context.lineTo(canvas.width,i);
         context.stroke();
     }
-
     context.restore();
 }
 //window坐标到canvas坐标的转换
 function windowToCanvas (x,y){
     var bbox = canvas.getBoundingClientRect();
     return {
-        x:x - bbox.left * (canvas.width / bbox.width),
+        x:x - bbox.left * (canvas.width / bbox.width),//即便canvas坐标进行的缩放也可以转换成功
         y:y - bbox.top * (canvas.height / bbox.height )
     }
 }
-//
+//绘制水平线
 function drawHorizontalLine (y){
     context.beginPath();
     context.moveTo(0,y+0.5);
     context.lineTo(canvas.width,y+0.5);
     context.stroke();
 }
+//绘制垂线
 function drawVericalLine(x){
     context.beginPath();
     context.moveTo(x+0.5,0);
     context.lineTo(x+0.5,canvas.height);
     context.stroke();
 }
+//绘制导引线
 function drawGuidewires (x,y){
     context.save();
     context.strokeStyle = 'rgba(255,0,0,1)';
@@ -85,7 +116,7 @@ function restoreDrawingSurface () {
 }
 
 
-//画橡皮筋辅助边框
+//橡皮筋辅助边框数据保存更新
 function updateRubberBandRect(loc){
     var width = Math.abs(loc.x - mousedown.x);
     var height = Math.abs(loc.y - mousedown.y);
@@ -98,8 +129,10 @@ function updateRubberBandRect(loc){
     rubberbandRect.x = point.x;
     rubberbandRect.y = point.y;
 }
+
+/*以下为画图功能接口*/
 //画直线
-function drawingLine(){
+function drawLine(loc){
     context.beginPath();
     context.moveTo(mousedown.x,mousedown.y);
     context.lineTo(loc.x,loc.y);
@@ -118,7 +151,6 @@ function drawPolygon(loc){
  *画虚线
  *
  */
-
 function drawDashLine(context,x1,y1,x2,y2,dashLenth){
     dashLenth = dashLenth ? dashLenth : 5;
     var xLength = Math.abs(x2 - x1);
@@ -134,6 +166,7 @@ function drawDashLine(context,x1,y1,x2,y2,dashLenth){
     context.stroke();
 }
 //画方向为逆时针的矩形：strokeRect和rect的路径方向都为顺时针，不像arc有个参数可以控制
+// 当做内部方法用，用于画出剪切板效果
 function drawRectPath(context,x,y,width,height,isRight){
     context.beginPath();
     if(isRight){
@@ -146,13 +179,13 @@ function drawRectPath(context,x,y,width,height,isRight){
     }
     context.closePath();
 }
-//画矩形
+//根据辅助矩形数据画矩形
 function drawRect(){
     drawRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,true);
     context.stroke();
 }
 
-//画圆角矩形路径
+//创建圆角矩形路径
 function roundedRectPath(context, x, y, width, height, cornerRadius){
     context.beginPath();
     context.moveTo(x+cornerRadius,y);
@@ -168,28 +201,25 @@ function drawRoundedRect(){
     roundedRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,10)
     context.stroke();
 }
-//画橡皮筋内容
+
+
+/*橡皮筋绘制相关*/
+//画橡皮筋形状
 function drawRubberBandShape(loc){
     context.save();
 
     context.strokeStyle = strokeColorSelect.value;
-    drawPolygon(loc);
-    //drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y,5);
-    //drawRoundedRect();
+    drawFun[drawingModule](loc);
     context.restore();
 }
-//更新橡皮筋
+//更新橡皮筋内容
 function updateRubberBand(loc){
     updateRubberBandRect(loc);
     drawRubberBandShape(loc);
 }
 
-//画存储列表中的所有图形
-function drawPolygons(){
-    polygons.forEach(function(polygon){
-        polygon.stroke(context);
-    });
-};
+
+/*辅助方法*/
 //draggingstart
 function startDragging(loc){
     saveDrawingSurface();
@@ -206,11 +236,38 @@ function stopEditing (){
     canvas.style.cursor = 'crosshair';
     editing =false;
 }
-//events
-canvas.onmousedown = function (e){
-    var loc = windowToCanvas(e.clientX, e.clientY);
-    e.preventDefault();
-    if(editing){
+//画存储列表中的所有图形
+function drawPolygons(){
+    polygons.forEach(function(polygon){
+        polygon.stroke(context);
+    });
+};
+
+/*状态关联对象*/
+
+var drawFun = {
+    "lining" : drawLine,
+    "rectting" : drawRect,
+    "polygonning" : drawPolygon
+
+};
+var moduleMouseDown = {
+    "penning" : function (){
+
+    },
+    "lining" : function (loc){
+        startDragging(loc);
+        dragging = true;
+    },
+    "rectting" : function (loc){
+        startDragging(loc);
+        dragging = true;
+    },
+    "polygonning" : function (loc){
+        startDragging(loc);
+        dragging = true;
+    },
+    "editing" : function (loc){
         polygons.forEach(function(polygon){
             polygon.createPath(context);
             if(context.isPointInPath(loc.x,loc.y)){
@@ -222,30 +279,16 @@ canvas.onmousedown = function (e){
                 return;
             }
         });
-    }else{
-        startDragging(loc);
-        dragging = true;
+    },
+    "erasing" : function (){
+
     }
-};
+}
+var moduleMouseMove = {
+    "penning" : function (){
 
-canvas.onmousemove = function (e) {
-    var loc = windowToCanvas(e.clientX, e.clientY);
-    e.preventDefault();
-    if(editing && dragging) {
-
-        /*不能这样实现的原因就是，无法把被拖动的图像去掉
-        restoreDrawingSurface();
-        dragging.x = loc.x - draggingOffX;
-        dragging.y = loc.y - draggingOffY;
-        dragging.stroke(context);
-        */
-        //TODO这种实现的前提是所有图形都保存在列表中了，可是直线和随便画的点，线并没有保存在图形中，就会消失
-        dragging.x = loc.x - draggingOffX;
-        dragging.y = loc.y - draggingOffY;
-        context.clearRect(0,0,canvas.width,canvas.height);
-        drawGrid('lightgray',10,10);
-        drawPolygons();
-    }else{
+    },
+    "lining" : function (loc){
         if(dragging){
             restoreDrawingSurface();
             updateRubberBand(loc);
@@ -253,16 +296,85 @@ canvas.onmousemove = function (e) {
                 drawGuidewires(loc.x, loc.y);
             }
         }
+    },
+    "rectting" : function (loc){
+        if(dragging){
+            restoreDrawingSurface();
+            updateRubberBand(loc);
+            if(guidewire.checked) {
+                drawGuidewires(loc.x, loc.y);
+            }
+        }
+    },
+    "polygonning" : function (loc){
+        if(dragging){
+            restoreDrawingSurface();
+            updateRubberBand(loc);
+            if(guidewire.checked) {
+                drawGuidewires(loc.x, loc.y);
+            }
+        }
+    },
+    "editing" : function (loc){
+        if(dragging) {
+            /*不能这样实现的原因就是，无法把被拖动的图像去掉
+             restoreDrawingSurface();
+             dragging.x = loc.x - draggingOffX;
+             dragging.y = loc.y - draggingOffY;
+             dragging.stroke(context);
+             */
+            //TODO这种实现的前提是所有图形都保存在列表中了，可是直线和随便画的点，线并没有保存在图形中，就会消失
+            dragging.x = loc.x - draggingOffX;
+            dragging.y = loc.y - draggingOffY;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid('lightgray', 10, 10);
+            drawPolygons();
+        }
+    },
+    "erasing" : function (){
+
     }
+}
+var moduleMouseUp = {
+    "penning" : function (){
+
+    },
+    "lining" : function (){
+        restoreDrawingSurface();
+        updateRubberBand(loc);
+    },
+    "rectting" : function (){
+        restoreDrawingSurface();
+        updateRubberBand(loc);
+    },
+    "polygonning" : function (){
+        restoreDrawingSurface();
+        updateRubberBand(loc);
+    },
+    "editing" : function (){
+
+    },
+    "erasing" : function (){
+
+    }
+}
+/*事件绑定*/
+canvas.onmousedown = function (e){
+    var loc = windowToCanvas(e.clientX, e.clientY);
+    e.preventDefault();
+    moduleMouseDown[drawingModule](loc);
+
+};
+
+canvas.onmousemove = function (e) {
+    var loc = windowToCanvas(e.clientX, e.clientY);
+    e.preventDefault();
+    moduleMouseMove[drawingModule](loc);
 };
 canvas.onmouseup = function (e){
     loc = windowToCanvas(e.clientX, e.clientY);
     dragging = false;
-    if(editing){
-    }else{
-        restoreDrawingSurface();
-        updateRubberBand(loc);
-    }
+    moduleMouseUp[drawingModule](loc);
 };
 
 clearBtn.onclick = function (e){
@@ -277,5 +389,10 @@ editingBtn.onclick = function (e){
         startEditing();
         this.innerHTML = 'stopEditing';
     }
-
+};
+lineBtn.onclick = function (e){
+    drawingModule = 'lining';
+};
+polygonBtn.onclick = function (e){
+    drawingModule = 'polygonning';
 };
