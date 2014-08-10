@@ -12,6 +12,7 @@ var eraseBtn = document.getElementById("erase");
 var polygonBtn = document.getElementById("polygon");
 var penBtn = document.getElementById("pen");
 var lineBtn = document.getElementById("line");
+var rectBtn = document.getElementById("rect");
 var editingBtn = document.getElementById("editing");
 //样式相关设置dom
 var strokeColorSelect = document.getElementById("stroke-color");
@@ -141,7 +142,9 @@ function drawLine(loc){
 //画多边形
 function drawPolygon(loc){
     var radius = Math.sqrt(Math.pow((loc.x - mousedown.x),2)+Math.pow((loc.y-mousedown.y),2));
-    var polygon = new Polygon(loc.x,loc.y,radius,8,0,"red","blue",true);
+    var sidesNum = sides.value | 0;
+
+    var polygon = new Polygon(loc.x,loc.y,radius,sidesNum,0,"red","blue",true);
     polygon.stroke(context);
     if(!dragging){
         polygons.push(polygon);
@@ -392,6 +395,12 @@ editingBtn.onclick = function (e){
 };
 lineBtn.onclick = function (e){
     drawingModule = 'lining';
+};
+rectBtn.onclick = function (e){
+    drawingModule = 'rectting';
+};
+eraseBtn.onclick = function (e){
+    drawingModule = 'erasing';
 };
 polygonBtn.onclick = function (e){
     drawingModule = 'polygonning';
