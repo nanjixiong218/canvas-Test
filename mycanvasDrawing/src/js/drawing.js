@@ -38,7 +38,6 @@ var penning = true,
 var dragging = false;
 
 
-drawGrid('lightgray',10,10);
 
 //辅助变量
 
@@ -49,13 +48,11 @@ var drawingSurfaceImageData,
     draggingOffX,//多边形移动时，多边形中心点于mousedown的点的偏移
     draggingOffY;
 
+drawGrid('lightgray',10,10);
 
-
-function init () {
-
-}
+/*绘制基础函数，baseDrawing*/
 /**
- * 绘制北京表格线
+ * 绘制背景表格线
  * @param color
  * @param stepx：水平表格间距
  * @param stepy：垂直表格间距
@@ -76,14 +73,7 @@ function drawGrid (color,stepx,stepy) {
     }
     context.restore();
 }
-//window坐标到canvas坐标的转换
-function windowToCanvas (x,y){
-    var bbox = canvas.getBoundingClientRect();
-    return {
-        x:x - bbox.left * (canvas.width / bbox.width),//即便canvas坐标进行的缩放也可以转换成功
-        y:y - bbox.top * (canvas.height / bbox.height )
-    }
-}
+
 //绘制水平线
 function drawHorizontalLine (y){
     context.beginPath();
@@ -108,28 +98,10 @@ function drawGuidewires (x,y){
     context.restore();
 }
 
-//绘图表面的保存和恢复
-function saveDrawingSurface (){
-    drawingSurfaceImageData = context.getImageData(0,0,canvas.width,canvas.height);
-}
-function restoreDrawingSurface () {
-    context.putImageData(drawingSurfaceImageData,0,0)
-}
 
 
-//橡皮筋辅助边框数据保存更新
-function updateRubberBandRect(loc){
-    var width = Math.abs(loc.x - mousedown.x);
-    var height = Math.abs(loc.y - mousedown.y);
-    var point = {
-        x: (loc.x - mousedown.x)>0?mousedown.x:loc.x,
-        y: (loc.y - mousedown.y)>0?mousedown.y:loc.y
-    };
-    rubberbandRect.width = width;
-    rubberbandRect.height = height;
-    rubberbandRect.x = point.x;
-    rubberbandRect.y = point.y;
-}
+
+
 
 /*以下为画图功能接口*/
 //画直线
@@ -153,7 +125,14 @@ function drawPolygon(loc){
     if(!dragging){
         polygons.push(polygon);
     }
-}
+};
+//画存储列表中的所有图形
+function drawPolygons(){
+    polygons.forEach(function(polygon){
+        polygon.stroke(context);
+    });
+};
+
 /**
  *画虚线
  *
@@ -212,6 +191,24 @@ function drawRoundedRect(){
     roundedRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,10)
     context.stroke();
 }
+//画橡皮擦形状
+function drawEraseShape(loc){
+    context.beginPath();
+    context.width = 1;
+    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
+    context.stroke();
+}
+//执行擦出过程
+function drawErasing(loc){
+    context.save();
+    context.beginPath();
+    context.width = 1;
+    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
+    context.clip();
+    context.clearRect(0,0,canvas.width,canvas.height);
+    drawGrid('lightgray',10,10);
+    context.restore();
+}
 
 
 /*橡皮筋绘制相关*/
@@ -228,27 +225,40 @@ function updateRubberBand(loc){
     updateRubberBandRect(loc);
     drawRubberBandShape(loc);
 }
-//执行擦出过程
-function drawErasing(loc){
-    context.save();
-    context.beginPath();
-    context.width = 1;
-    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
-    context.clip();
-    context.clearRect(0,0,canvas.width,canvas.height);
-    drawGrid('lightgray',10,10);
-    context.restore();
-}
-//画橡皮擦形状
-function drawEraseShape(loc){
-    context.beginPath();
-    context.width = 1;
-    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
-    context.stroke();
+//橡皮筋辅助边框数据保存更新
+function updateRubberBandRect(loc){
+    var width = Math.abs(loc.x - mousedown.x);
+    var height = Math.abs(loc.y - mousedown.y);
+    var point = {
+        x: (loc.x - mousedown.x)>0?mousedown.x:loc.x,
+        y: (loc.y - mousedown.y)>0?mousedown.y:loc.y
+    };
+    rubberbandRect.width = width;
+    rubberbandRect.height = height;
+    rubberbandRect.x = point.x;
+    rubberbandRect.y = point.y;
 }
 
 
-/*辅助方法*/
+
+
+
+/*辅助函数*/
+//window坐标到canvas坐标的转换
+function windowToCanvas (x,y){
+    var bbox = canvas.getBoundingClientRect();
+    return {
+        x:x - bbox.left * (canvas.width / bbox.width),//即便canvas坐标进行的缩放也可以转换成功
+        y:y - bbox.top * (canvas.height / bbox.height )
+    }
+}
+//绘图表面的保存和恢复
+function saveDrawingSurface (){
+    drawingSurfaceImageData = context.getImageData(0,0,canvas.width,canvas.height);
+}
+function restoreDrawingSurface () {
+    context.putImageData(drawingSurfaceImageData,0,0)
+}
 //draggingstart
 function startDragging(loc){
     saveDrawingSurface();
@@ -265,14 +275,8 @@ function stopEditing (){
     canvas.style.cursor = 'crosshair';
     drawingModule = 'penning';
 }
-//画存储列表中的所有图形
-function drawPolygons(){
-    polygons.forEach(function(polygon){
-        polygon.stroke(context);
-    });
-};
 
-/*状态关联对象*/
+/*状态模式关联对象*/
 
 var drawFun = {
     "lining" : drawLine,
@@ -401,7 +405,7 @@ var moduleMouseUp = {
     "erasing" : function (){
         restoreDrawingSurface();
     }
-}
+};
 /*事件绑定*/
 canvas.onmousedown = function (e){
     var loc = windowToCanvas(e.clientX, e.clientY);
