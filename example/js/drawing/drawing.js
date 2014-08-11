@@ -220,6 +220,24 @@ function updateRubberBand(loc){
     updateRubberBandRect(loc);
     drawRubberBandShape(loc);
 }
+//执行擦出过程
+function drawErasing(loc){
+    context.save();
+    context.beginPath();
+    context.width = 1;
+    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
+    context.clip();
+    context.clearRect(0,0,canvas.width,canvas.height);
+    drawGrid('lightgray',10,10);
+    context.restore();
+}
+//画橡皮擦形状
+function drawEraseShape(loc){
+    context.beginPath();
+    context.width = 1;
+    context.arc(loc.x,loc.y,10,0,Math.PI*2,true);
+    context.stroke();
+}
 
 
 /*辅助方法*/
@@ -232,12 +250,12 @@ function startDragging(loc){
 //开始拖拽，设置拖拽样式
 function startEditing (){
     canvas.style.cursor = 'pointer';
-    editing = true;
+    drawingModule = 'editing';
 }
 //结束拖拽，设置样式
 function stopEditing (){
     canvas.style.cursor = 'crosshair';
-    editing =false;
+    drawingModule = 'penning';
 }
 //画存储列表中的所有图形
 function drawPolygons(){
@@ -255,8 +273,8 @@ var drawFun = {
 
 };
 var moduleMouseDown = {
-    "penning" : function (){
-
+    "penning" : function (loc){
+        dragging = true;
     },
     "lining" : function (loc){
         startDragging(loc);
@@ -283,13 +301,18 @@ var moduleMouseDown = {
             }
         });
     },
-    "erasing" : function (){
-
+    "erasing" : function (loc){
+        restoreDrawingSurface();
+        dragging = true;
     }
 }
 var moduleMouseMove = {
-    "penning" : function (){
-
+    "penning" : function (loc){
+        if(dragging){//画笔该怎么实现呢？通过画圆的方式，但是断断续续的。TODO
+            context.beginPath();
+            context.arc(loc.x,loc.y,1,0,Math.PI*2,true);
+            context.stroke();
+        }
     },
     "lining" : function (loc){
         if(dragging){
@@ -334,13 +357,23 @@ var moduleMouseMove = {
             drawPolygons();
         }
     },
-    "erasing" : function (){
-
+    "erasing" : function (loc){
+        if(dragging){
+            //橡皮擦的实现流程有些麻烦啊！有更好办法么？TODO
+            restoreDrawingSurface();
+            drawErasing(loc);
+            saveDrawingSurface();
+            drawEraseShape(loc);
+        }else{
+            restoreDrawingSurface();
+            drawErasing(loc);
+            drawEraseShape(loc);
+        }
     }
 }
 var moduleMouseUp = {
     "penning" : function (){
-
+        dragging = false;
     },
     "lining" : function (){
         restoreDrawingSurface();
@@ -358,7 +391,7 @@ var moduleMouseUp = {
 
     },
     "erasing" : function (){
-
+        restoreDrawingSurface();
     }
 }
 /*事件绑定*/
@@ -384,14 +417,12 @@ clearBtn.onclick = function (e){
     context.clearRect(0,0,canvas.width,canvas.height);
     drawGrid('lightgray',10,10);
 };
+penBtn.onclick = function(e){
+    drawingModule = 'penning';
+}
+
 editingBtn.onclick = function (e){
-    if(editing){
-        stopEditing();
-        this.innerText = 'startEditing';
-    }else{
-        startEditing();
-        this.innerHTML = 'stopEditing';
-    }
+   startEditing();
 };
 lineBtn.onclick = function (e){
     drawingModule = 'lining';
@@ -401,6 +432,7 @@ rectBtn.onclick = function (e){
 };
 eraseBtn.onclick = function (e){
     drawingModule = 'erasing';
+    saveDrawingSurface();
 };
 polygonBtn.onclick = function (e){
     drawingModule = 'polygonning';
