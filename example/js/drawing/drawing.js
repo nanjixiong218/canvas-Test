@@ -134,10 +134,14 @@ function updateRubberBandRect(loc){
 /*以下为画图功能接口*/
 //画直线
 function drawLine(loc){
-    context.beginPath();
-    context.moveTo(mousedown.x,mousedown.y);
-    context.lineTo(loc.x,loc.y);
-    context.stroke();
+    if(dash.checked == true){
+        drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y);
+    }else {
+        context.beginPath();
+        context.moveTo(mousedown.x, mousedown.y);
+        context.lineTo(loc.x, loc.y);
+        context.stroke();
+    }
 }
 //画多边形
 function drawPolygon(loc){
@@ -184,7 +188,11 @@ function drawRectPath(context,x,y,width,height,isRight){
 }
 //根据辅助矩形数据画矩形
 function drawRect(){
-    drawRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,true);
+    if(rounded.checked == true){
+        drawRoundedRect();
+    }else {
+        drawRectPath(context, rubberbandRect.x, rubberbandRect.y, rubberbandRect.width, rubberbandRect.height, true);
+    }
     context.stroke();
 }
 
