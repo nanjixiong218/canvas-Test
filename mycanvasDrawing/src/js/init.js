@@ -27,12 +27,7 @@ var sides = document.getElementById("sides");
 
 //模式标记状态字段初始化，一开始是画笔状态
 var drawingModule = 'penning';
-//有了drawingModule变量就不需要下面的了吧
-var penning = true,
-    editing = false,
-    lining = false,
-    erasing = false,
-    polygonning =false;
+
 //上面的状态只能有一个为true，下面的dragging是在任何状态下都可以为true的
 //状态
 var dragging = false;

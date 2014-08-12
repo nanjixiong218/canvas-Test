@@ -15,7 +15,7 @@ canvas.onmousemove = function (e) {
     moduleMouseMove[drawingModule](loc);
 };
 canvas.onmouseup = function (e){
-    loc = windowToCanvas(e.clientX, e.clientY);
+    var loc = windowToCanvas(e.clientX, e.clientY);
     dragging = false;
     moduleMouseUp[drawingModule](loc);
 };
@@ -26,7 +26,7 @@ clearBtn.onclick = function (e){
 };
 penBtn.onclick = function(e){
     drawingModule = 'penning';
-}
+};
 
 editingBtn.onclick = function (e){
     startEditing();

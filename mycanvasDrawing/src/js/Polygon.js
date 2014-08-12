@@ -2,11 +2,6 @@
  * Created by Administrator on 2014/8/9.
  */
 
-var Point = function (x,y){
-    console.log(context);
-    this.x = x;
-    this.y = y;
-};
 
 /**
  *

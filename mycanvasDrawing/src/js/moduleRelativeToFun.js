@@ -10,7 +10,7 @@ var drawFun = {
 
 };
 var moduleMouseDown = {
-    "penning" : function (loc){
+    "penning" : function (){
         dragging = true;
     },
     "lining" : function (loc){
@@ -38,11 +38,11 @@ var moduleMouseDown = {
             }
         });
     },
-    "erasing" : function (loc){
+    "erasing" : function (){
         restoreDrawingSurface();
         dragging = true;
     }
-}
+};
 var moduleMouseMove = {
     "penning" : function (loc){
         if(dragging){//画笔该怎么实现呢？通过画圆的方式，但是断断续续的。TODO
@@ -107,20 +107,20 @@ var moduleMouseMove = {
             drawEraseShape(loc);
         }
     }
-}
+};
 var moduleMouseUp = {
     "penning" : function (){
         dragging = false;
     },
-    "lining" : function (){
+    "lining" : function (loc){
         restoreDrawingSurface();
         updateRubberBand(loc);
     },
-    "rectting" : function (){
+    "rectting" : function (loc){
         restoreDrawingSurface();
         updateRubberBand(loc);
     },
-    "polygonning" : function (){
+    "polygonning" : function (loc){
         restoreDrawingSurface();
         updateRubberBand(loc);
     },
@@ -130,4 +130,4 @@ var moduleMouseUp = {
     "erasing" : function (){
         restoreDrawingSurface();
     }
-}
+};

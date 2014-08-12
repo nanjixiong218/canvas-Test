@@ -8,14 +8,14 @@ function windowToCanvas (x,y){
     return {
         x:x - bbox.left * (canvas.width / bbox.width),//即便canvas坐标进行的缩放也可以转换成功
         y:y - bbox.top * (canvas.height / bbox.height )
-    }
+    };
 }
 //绘图表面的保存和恢复
 function saveDrawingSurface (){
     drawingSurfaceImageData = context.getImageData(0,0,canvas.width,canvas.height);
 }
 function restoreDrawingSurface () {
-    context.putImageData(drawingSurfaceImageData,0,0)
+    context.putImageData(drawingSurfaceImageData,0,0);
 }
 //draggingstart
 function startDragging(loc){

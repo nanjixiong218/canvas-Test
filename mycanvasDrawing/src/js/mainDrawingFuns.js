@@ -4,7 +4,7 @@
 /*以下为画图功能接口*/
 //画直线
 function drawLine(loc){
-    if(dash.checked == true){
+    if(dash.checked === true){
         drawDashLine(context,mousedown.x,mousedown.y,loc.x,loc.y);
     }else {
         context.beginPath();
@@ -23,13 +23,13 @@ function drawPolygon(loc){
     if(!dragging){
         polygons.push(polygon);
     }
-};
+}
 //画存储列表中的所有图形
 function drawPolygons(){
     polygons.forEach(function(polygon){
         polygon.stroke(context);
     });
-};
+}
 
 /**
  *画虚线
@@ -41,11 +41,11 @@ function drawDashLine(context,x1,y1,x2,y2,dashLenth){
     var yLength = Math.abs(y2 - y1);
     var deltaX = x2 - x1;
     var deltaY = y2 - y1;
-    var dashLineLength = Math.sqrt(Math.pow(xLength,2)+Math.pow(xLength,2));
+    var dashLineLength = Math.sqrt(Math.pow(xLength,2)+Math.pow(yLength,2));
     var dashNum = Math.floor(dashLineLength/dashLenth);
     context.beginPath();
     for(var i = 0 ,length = dashNum ;i<length ;i++){
-        context[ i%2 == 0 ? 'moveTo':'lineTo'](x1+(deltaX/dashNum)*i,y1+(deltaY/dashNum)*i);
+        context[ i%2 === 0 ? 'moveTo':'lineTo'](x1+(deltaX/dashNum)*i,y1+(deltaY/dashNum)*i);
     }
     context.stroke();
 }
@@ -65,7 +65,7 @@ function drawRectPath(context,x,y,width,height,isRight){
 }
 //根据辅助矩形数据画矩形
 function drawRect(){
-    if(rounded.checked == true){
+    if(rounded.checked === true){
         drawRoundedRect();
     }else {
         drawRectPath(context, rubberbandRect.x, rubberbandRect.y, rubberbandRect.width, rubberbandRect.height, true);
@@ -86,7 +86,7 @@ function roundedRectPath(context, x, y, width, height, cornerRadius){
 //画圆角矩形:书上有一个方法，
 // 太难看了写的，也就是可以从任意位置，向任意方向开始罢了，api不好用，又不好理解，不知道为什么它要那么写
 function drawRoundedRect(){
-    roundedRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,10)
+    roundedRectPath(context,rubberbandRect.x,rubberbandRect.y,rubberbandRect.width,rubberbandRect.height,10);
     context.stroke();
 }
 //画橡皮擦形状
