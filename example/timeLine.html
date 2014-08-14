@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<title>my canvas
+		</title>
+		<script src="js/drawTimeLine.js"></script>
+
+		<script type="text/javascript">
+            window.onload = function (){
+                var canvas = document.getElementById('mycanvas');
+                var context = canvas.getContext('2d');
+
+                var timePoints = ['2008','2009','2010','2011','2012'];
+                var image = new Image();
+                image.src = 'image/me.jpg';
+                image.onload = function (){
+                    var timeLine = new TimeLine('red',100,540,800,6,image,timePoints);
+                    timeLine.strokeAll(canvas,context);
+                };
+
+
+
+            };
+
+		</script>
+	</head>
+	<body>
+
+		<canvas id="mycanvas" width="1000px" height="600px"></canvas>
+		<button id="NtoAll" type="button" >NtoAll</button>
+		<button id="StoAll">StoAll</button>
+		<button id="WtoAll">WtoAll</button>
+		<button id="EtoAll">EtoAll</button>
+	</body>
+</html>
