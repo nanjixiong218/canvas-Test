@@ -65,16 +65,17 @@ TimeLine.prototype = {
             context.lineTo(tempPoint.x,tempPoint.y-this.lineOffHeight);
         }
     },
-    strokeAll:function(canvas,context){
+    strokeAll:function(canvas,context,x,y){
         context.save();
         this.createAll(canvas,context);
         context.stroke();
-        this.drawHead(canvas,context);
+        this.drawHead(canvas,context,x,y);
         this.drawPointsText(canvas,context);
         context.restore();
     },
-    drawHead:function(canvas,context){
-        context.drawImage(this.image,this.x-15,this.y-60,30,35);
+    drawHead:function(canvas,context,x ,y){
+
+        context.drawImage(this.image,x,y,30,35);
     },
     drawPointsText:function(canvas,context){
         context.font='10px black';
@@ -88,8 +89,20 @@ TimeLine.prototype = {
             context.fillText(this.timePoints[i],tempPoint.x,tempPoint.y+10);
         }
     },
-    animate:function(){
-
+    animate:function(canvas,context,y){
+        var x = this.x-15;
+        var that = this;
+        var loop = function(){
+            x+=1;
+            if(x<=y){
+                context.clearRect(0,0,canvas.width,canvas.height);
+                that.strokeAll(canvas,context,x,that.y-60);
+                window.requestAnimationFrame(loop);
+            }else{
+                console.log("stop");
+            }
+        };
+        window.requestAnimationFrame(loop);
     }
 
 };

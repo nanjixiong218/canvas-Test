@@ -15,7 +15,11 @@
                 image.src = 'image/me.jpg';
                 image.onload = function (){
                     var timeLine = new TimeLine('red',100,540,800,6,image,timePoints);
-                    timeLine.strokeAll(canvas,context);
+                    timeLine.strokeAll(canvas,context,85,480);
+
+                    document.getElementById("move").onclick = function(e){
+                        timeLine.animate(canvas,context,timeLine.pointsPosition[1].x-15);
+                    };
                 };
 
 
@@ -27,7 +31,7 @@
 	<body>
 
 		<canvas id="mycanvas" width="1000px" height="600px"></canvas>
-		<button id="NtoAll" type="button" >NtoAll</button>
+		<button id="move" type="button" >move</button>
 		<button id="StoAll">StoAll</button>
 		<button id="WtoAll">WtoAll</button>
 		<button id="EtoAll">EtoAll</button>
