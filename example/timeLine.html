@@ -4,25 +4,41 @@
 		<title>my canvas
 		</title>
 		<script src="js/drawTimeLine.js"></script>
+		<script src="js/drawStretch.js"></script>
 
 		<script type="text/javascript">
             window.onload = function (){
                 var canvas = document.getElementById('mycanvas');
                 var context = canvas.getContext('2d');
+                var stretch = new Stretch(canvas,context);
+                stretch.drawBackGround();
 
-                var timePoints = ['2008','2009','2010','2011','2012'];
-                var image = new Image();
-                image.src = 'image/me.jpg';
-                image.onload = function (){
-                    var timeLine = new TimeLine('red',100,540,800,6,image,timePoints);
-                    timeLine.strokeAll(canvas,context,85,480);
-
-                    document.getElementById("move").onclick = function(e){
-                        timeLine.animate(canvas,context,timeLine.pointsPosition[1].x-15);
-                    };
+                document.getElementById("one").onclick = function(e){
+                    stretch.animate(0,50);
+                };
+                document.getElementById("two").onclick = function(e){
+                    stretch.animate(50,100);
+                };
+                document.getElementById("three").onclick = function(e){
+                    stretch.animate(100,200);
                 };
 
 
+
+                //drawTimeLine();
+                function drawTimeLine (){
+                    var timePoints = ['2008','2009','2010','2011','2012'];
+                    var image = new Image();
+                    image.src = 'image/me.jpg';
+                    image.onload = function (){
+                        var timeLine = new TimeLine('red',100,540,800,6,image,timePoints);
+                        timeLine.strokeAll(canvas,context,85,480);
+
+                        document.getElementById("move").onclick = function(e){
+                            timeLine.animate(canvas,context,timeLine.pointsPosition[1].x-15);
+                        };
+                    };
+                }
 
             };
 
@@ -32,8 +48,8 @@
 
 		<canvas id="mycanvas" width="1000px" height="600px"></canvas>
 		<button id="move" type="button" >move</button>
-		<button id="StoAll">StoAll</button>
-		<button id="WtoAll">WtoAll</button>
-		<button id="EtoAll">EtoAll</button>
+		<button id="one">one</button>
+		<button id="two">two</button>
+		<button id="three">three</button>
 	</body>
 </html>
