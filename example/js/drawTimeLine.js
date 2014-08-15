@@ -2,7 +2,9 @@
  * Created by Administrator on 2014/8/14.
  */
 
-var TimeLine = function (color ,x ,y ,width ,lineHeight ,image ,timePoints){
+var TimeLine = function (canvas,context,color ,x ,y ,width ,lineHeight ,image ,timePoints){
+    this.canvas = canvas;
+    this.context = context;
     this.x = x;
     this.y = y;
     this.style = color;
@@ -19,84 +21,84 @@ var TimeLine = function (color ,x ,y ,width ,lineHeight ,image ,timePoints){
     this.lineOffHeight = 20;
 };
 TimeLine.prototype = {
-    init : function(canvas,context){
+    init : function(){
         for(var i = 0,length = this.timePoints.length ;i < length; i++){
             this.pointsPosition.push({
                 x:this.x+this.margin*i,
                 y:this.y
             });
         }
-        var gradient = context.createLinearGradient(0,0,this.width,0);
+        var gradient = this.context.createLinearGradient(0,0,this.width,0);
         gradient.addColorStop(0,'blue');
         gradient.addColorStop(0.25,'white');
         gradient.addColorStop(0.5,'purple');
         gradient.addColorStop(0.75,'red');
         gradient.addColorStop(1,'blue');
-        context.strokeStyle = gradient;
-        context.lineWidth = this.lineWidth;
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.shadowColor = 'rgba(0,0,0,0.7)';
-        context.shadowOffsetX = 2;
-        context.shadowOffsetY = 2;
-        context.shadowBlur = 4 ;
+        this.context.strokeStyle = gradient;
+        this.context.lineWidth = this.lineWidth;
+        this.context.lineCap = 'round';
+        this.context.lineJoin = 'round';
+        this.context.shadowColor = 'rgba(0,0,0,0.7)';
+        this.context.shadowOffsetX = 2;
+        this.context.shadowOffsetY = 2;
+        this.context.shadowBlur = 4 ;
     },
-    createAll : function (canvas,context){
-        this.init(canvas,context);
-        this.createMainLine(canvas,context);
-        this.createPointsPosition(canvas,context);
+    createAll : function (){
+        this.init();
+        this.createMainLine();
+        this.createPointsPosition();
     },
-    createMainLine: function (canvas,context){
-        context.beginPath();
-        context.moveTo(this.x,this.y);
-        context.lineTo(this.x+this.width,this.y);
-        context.lineTo(this.x+this.width-this.offJx,this.y+this.offJy);
-        context.moveTo(this.x+this.width,this.y);
-        context.lineTo(this.x+this.width-this.offJx,this.y-this.offJy);
+    createMainLine: function (){
+        this.context.beginPath();
+        this.context.moveTo(this.x,this.y);
+        this.context.lineTo(this.x+this.width,this.y);
+        this.context.lineTo(this.x+this.width-this.offJx,this.y+this.offJy);
+        this.context.moveTo(this.x+this.width,this.y);
+        this.context.lineTo(this.x+this.width-this.offJx,this.y-this.offJy);
     },
-    createPointsPosition:function(canvas,context){
-        context.lineWidth = '2px';
+    createPointsPosition:function(){
+        this.context.lineWidth = '2px';
         for(var i = 0,length = this.timePoints.length;i<length;i++){
             var tempPoint = {
                 x:this.pointsPosition[i].x,
                 y:this.pointsPosition[i].y
             };
-            context.moveTo(tempPoint.x,tempPoint.y);
-            context.lineTo(tempPoint.x,tempPoint.y-this.lineOffHeight);
+            this.context.moveTo(tempPoint.x,tempPoint.y);
+            this.context.lineTo(tempPoint.x,tempPoint.y-this.lineOffHeight);
         }
     },
-    strokeAll:function(canvas,context,x,y){
-        context.save();
-        this.createAll(canvas,context);
-        context.stroke();
-        this.drawHead(canvas,context,x,y);
-        this.drawPointsText(canvas,context);
-        context.restore();
+    strokeAll:function(x,y){
+        this.context.save();
+        this.createAll();
+        this.context.stroke();
+        this.drawHead(x,y);
+        this.drawPointsText();
+        this.context.restore();
     },
-    drawHead:function(canvas,context,x ,y){
+    drawHead:function(x ,y){
 
-        context.drawImage(this.image,x,y,30,35);
+        this.context.drawImage(this.image,x,y,30,35);
     },
-    drawPointsText:function(canvas,context){
-        context.font='10px black';
-        context.textAlign = 'center';
-        context.textBaseline = 'top';
+    drawPointsText:function(){
+        this.context.font='10px black';
+        this.context.textAlign = 'center';
+        this.context.textBaseline = 'top';
         for(var i = 0,length = this.timePoints.length;i<length;i++){
             var tempPoint = {
                 x:this.pointsPosition[i].x,
                 y:this.pointsPosition[i].y
             };
-            context.fillText(this.timePoints[i],tempPoint.x,tempPoint.y+10);
+            this.context.fillText(this.timePoints[i],tempPoint.x,tempPoint.y+10);
         }
     },
-    animate:function(canvas,context,y){
-        var x = this.x-15;
+    animate:function(begin,end){
+        var x = begin;
         var that = this;
         var loop = function(){
             x+=1;
-            if(x<=y){
-                context.clearRect(0,0,canvas.width,canvas.height);
-                that.strokeAll(canvas,context,x,that.y-60);
+            if(x<=end){
+                that.context.clearRect(0,0,that.canvas.width,that.canvas.height);
+                that.strokeAll(x,that.y-60);
                 window.requestAnimationFrame(loop);
             }else{
                 console.log("stop");

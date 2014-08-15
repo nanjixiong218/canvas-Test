@@ -5,25 +5,37 @@
 		</title>
 		<script src="js/drawTimeLine.js"></script>
 		<script src="js/drawStretch.js"></script>
+		<script src="js/together.js"></script>
 
 		<script type="text/javascript">
             window.onload = function (){
                 var canvas = document.getElementById('mycanvas');
                 var context = canvas.getContext('2d');
-                var stretch = new Stretch(canvas,context);
-                stretch.drawBackGround();
-
-                document.getElementById("one").onclick = function(e){
-                    stretch.animate(0,50);
-                };
-                document.getElementById("two").onclick = function(e){
-                    stretch.animate(50,100);
-                };
-                document.getElementById("three").onclick = function(e){
-                    stretch.animate(100,200);
+                var timePoints = ['2008','2009','2010','2011','2012'];
+                var image = new Image();
+                image.src = 'image/me.jpg';
+                image.onload = function (){
+                    var timeLine = new TimeLine(canvas,context,'red',100,540,800,6,image,timePoints);
+                    timeLine.strokeAll(85,480);
+                    var stretch = new Stretch(canvas,context);
+                    var together = new Together(stretch,timeLine);
+                    together.animate(100,200,timeLine.pointsPosition[1].x-15,timeLine.pointsPosition[2].x-15);
                 };
 
 
+                function stretchCir(){
+                    var stretch = new Stretch(canvas,context);
+                    stretch.drawBackGround();
+                    document.getElementById("one").onclick = function(e){
+                        stretch.animate(0,50);
+                    };
+                    document.getElementById("two").onclick = function(e){
+                        stretch.animate(50,100);
+                    };
+                    document.getElementById("three").onclick = function(e){
+                        stretch.animate(100,200);
+                    };
+                }
 
                 //drawTimeLine();
                 function drawTimeLine (){
@@ -31,11 +43,10 @@
                     var image = new Image();
                     image.src = 'image/me.jpg';
                     image.onload = function (){
-                        var timeLine = new TimeLine('red',100,540,800,6,image,timePoints);
-                        timeLine.strokeAll(canvas,context,85,480);
-
+                        var timeLine = new TimeLine(canvas,context,'red',100,540,800,6,image,timePoints);
+                        timeLine.strokeAll(85,480);
                         document.getElementById("move").onclick = function(e){
-                            timeLine.animate(canvas,context,timeLine.pointsPosition[1].x-15);
+                            timeLine.animate(timeLine.pointsPosition[1].x-15,timeLine.pointsPosition[2].x-15);
                         };
                     };
                 }
