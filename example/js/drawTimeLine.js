@@ -80,7 +80,8 @@ TimeLine.prototype = {
         this.context.drawImage(this.image,x,y,30,35);
     },
     drawPointsText:function(){
-        this.context.font='10px black';
+        this.context.font='10px palatino';
+        this.context.fillStyle='green';
         this.context.textAlign = 'center';
         this.context.textBaseline = 'top';
         for(var i = 0,length = this.timePoints.length;i<length;i++){
