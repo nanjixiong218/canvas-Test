@@ -102,9 +102,11 @@ Together.prototype = {
     },
     drawText :function(text,alp){
         this.context.save();
-        this.context.font = '16px red';//必须设置字体,非法的也可以
-        this.context.fillStyle = 'rgba(0,0,150,'+alp+')';
-        this.context.fillText(text,30,50);
+        this.context.font = '32px red';//必须设置字体,非法的也可以
+        this.context.fillStyle = 'rgba(0,255,0,'+alp+')';
+        this.context.textAlign = 'center';
+
+        this.context.fillText(text,this.canvas.width/2,30);
         this.context.restore();
     }
 };

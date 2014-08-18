@@ -16,8 +16,8 @@
 		<script type="text/javascript">
             window.onload = function (){
                 var canvas = document.getElementById('mycanvas');
-                canvas.width = screen.width;
-                canvas.height = screen.height;
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight-5;
                 var context = canvas.getContext('2d');
 
                 together();
@@ -39,7 +39,7 @@
                         path.push(function(dir){
                             var keepPoint = dir==1?0:1;
                             var keepRadius = dir==1?0:50;
-                            together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"一开始的时候我的世界一片黑暗",dir);
+                            together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"一开始的时候我的世界一片黑暗",0);
                             setTimeout(function(){
                                 together.animate(0,50,dir,timeLine.pointsPosition[0].x-15,timeLine.pointsPosition[1].x-15,dir,"然后学习了一些基本知识",dir);
                             },1000);
@@ -47,7 +47,7 @@
                         path.push(function(dir){
                             var keepPoint = dir==1?1:2;
                             var keepRadius = dir==1?50:100;
-                            together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"然后学习了一些基本知识",dir);
+                            together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"然后学习了一些基本知识",0);
                             setTimeout(function(){
                                 together.animate(50,100,dir,timeLine.pointsPosition[1].x-15,timeLine.pointsPosition[2].x-15,dir,"学到了一定阶段以为自己懂了很多，开始了因为无知的无谓……",dir);
                             },1000);
