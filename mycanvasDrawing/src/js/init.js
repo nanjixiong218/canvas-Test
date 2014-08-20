@@ -3,6 +3,8 @@
  * 全局变量声明
  */
 var canvas = document.getElementById('mydrawing');
+canvas.width = window.innerWidth - 250;
+canvas.height = window.innerHeight - 50;
 var context = canvas.getContext('2d');
 //获取控制控件的dom元素
 var clearBtn = document.getElementById("clearAll");

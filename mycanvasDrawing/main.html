@@ -10,55 +10,68 @@
 </head>
 <body>
 <div id="controls">
-    <label for="stroke-color">StrokeColor:</label>
-    <select id="stroke-color">
-        <option selected="selected" value="red">red</option>
-        <option value="blue">blue</option>
-        <option value="green">green</option>
-        <option value="yellow">yellow</option>
-    </select>
-    <label for="fill-color">StrokeColor:</label>
-    <select id="fill-color">
-        <option selected="selected" value="red">red</option>
-        <option value="blue">blue</option>
-        <option value="green">green</option>
-        <option value="yellow">yellow</option>
-    </select>
-    <label for="sides">多边形变数:</label>
-    <select id="sides">
-        <option selected="selected" value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-    </select>
-
-    <label for="guidewire">导引线:</label>
-    <input id="guidewire" type="checkbox"  value="1"/>
-    <label for="dash">虚线:</label>
-    <input id="dash" type="checkbox"  value="1"/>
-    <label for="rounded">圆角:</label>
-    <input id="rounded" type="checkbox"  value="1"/>
-
-
-    <button id="pen">画笔</button>
-    <button id="line">直线</button>
-    <button id="rect">矩形</button>
-    <button id="polygon" value="edit">画多边形</button>
-    <button id="erase" value="edit">橡皮擦</button>
-    <button id="editing" value="edit">startDragging</button>
-    <button id="clearAll" value="Clear">清空画板</button>
+    <div class="oneLine">
+        <label for="stroke-color">颜色:</label>
+        <select id="stroke-color">
+            <option selected="selected" value="red">red</option>
+            <option value="blue">blue</option>
+            <option value="green">green</option>
+            <option value="yellow">yellow</option>
+        </select>
+    </div>
+    <div class="oneLine">
+        <label for="sides">多边形变数:</label>
+        <select id="sides">
+            <option selected="selected" value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+    </div>
+    <div class="oneLine">
+        <label for="guidewire">导引线:</label>
+        <input id="guidewire" type="checkbox"  value="1"/>
+    </div>
+    <div class="oneLine">
+        <label for="dash">虚线:</label>
+        <input id="dash" type="checkbox"  value="1"/>
+    </div>
+    <div class="oneLine">
+        <label for="rounded">圆角:</label>
+        <input id="rounded" type="checkbox"  value="1"/>
+    </div>
+    <div class="oneLine">
+        <button id="pen">画笔</button>
+    </div>
+    <div class="oneLine">
+        <button id="line">直线</button>
+    </div>
+    <div class="oneLine">
+        <button id="rect">矩形</button>
+    </div>
+    <div class="oneLine">
+        <button id="polygon" value="edit">画多边形</button>
+    </div>
+    <div class="oneLine">
+        <button id="erase" value="edit">橡皮擦</button>
+    </div>
+    <div class="oneLine">
+        <button id="editing" value="edit">拖动多边形</button>
+    </div>
+    <div class="oneLine">
+        <button id="clearAll" value="Clear">清空画板</button>
+    </div>
 </div>
 
-<canvas id="mydrawing" width="600" height="600">
+<canvas id="mydrawing">
 
 </canvas>
 </body>
 <script type="text/javascript" src="dist/myCanvasDrawing.js"></script>
 <script type="text/javascript">
     window.onload = function(){
-
 
     };
 </script>
