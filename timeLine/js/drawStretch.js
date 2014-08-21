@@ -12,7 +12,7 @@ var Stretch = function(canvas,context){
 
 Stretch.prototype = {
     drawText:drawText,
-    drawRadiusText:drawRadiusText,
+    drawRadiusTexts:drawRadiusTexts,
     clipArc:clipArc,
     drawBackGround:drawBackGround,
     fillCanvas:fillCanvas,
@@ -23,22 +23,83 @@ Stretch.prototype = {
 
 
 function drawText(){
-    this.context.font = "8px red";
+    this.context.font = "16px red";
     this.context.fillStyle = 'black';
     this.context.textAlign = 'center';
     this.context.textBaseline = 'middle';
-
-    this.context.fillText("html",this.mid.x,this.mid.y);
-    this.drawRadiusText("javascript",20,Math.PI/4);
+    this.context.fillText("基础",this.mid.x,this.mid.y);
+    var texts20 = [];
+    var texts50 = [];
+    var texts80 = [];
+    texts20.push({
+        text:'js',
+        angle:Math.PI/4
+    });
+    texts20.push({
+        text:'css',
+        angle:Math.PI*3/4
+    });
+    texts20.push({
+        text:'html',
+        angle:Math.PI*3/2
+    });
+    texts50.push({
+        text:'jquery',
+        angle:0
+    });
+    texts50.push({
+        text:'seajs',
+        angle:Math.PI/2
+    });
+    texts50.push({
+        text:'sass',
+        angle:Math.PI
+    });
+    texts50.push({
+        text:'ejs',
+        angle:Math.PI*3/2
+    });
+    texts80.push({
+        text:'angular',
+        angle:Math.PI/3
+    });
+    texts80.push({
+        text:'vue',
+        angle:(Math.PI/3)*2
+    });
+    texts80.push({
+        text:'backbone',
+        angle:(Math.PI/3)*3
+    });
+    texts80.push({
+        text:'grunt',
+        angle:(Math.PI/3)*4
+    });
+    texts80.push({
+        text:'Mock',
+        angle:(Math.PI/3)*5
+    });
+    texts80.push({
+        text:'RAP',
+        angle:(Math.PI/3)*6
+    });
+    this.drawRadiusTexts(texts20,20);
+    this.drawRadiusTexts(texts50,50);
+    this.drawRadiusTexts(texts80,80);
 }
-function drawRadiusText(text,r,angle){
-    this.context.save();
-    this.context.translate(this.mid.x + r*Math.cos(angle),this.mid.y - r*Math.sin(angle));
-    this.context.rotate(Math.PI/2-angle);
-    this.context.textAlign = 'center';
-    this.context.textBaseline = 'bottom';
-    this.context.fillText(text,0,0);
-    this.context.restore();
+function drawRadiusTexts(texts,r){
+    for(var i= 0,length = texts.length;i<length;i++){
+        var text = texts[i].text;
+        var angle = texts[i].angle;
+        this.context.save();
+        this.context.translate(this.mid.x + r*Math.cos(angle),this.mid.y - r*Math.sin(angle));
+        this.context.rotate(Math.PI/2-angle);
+        this.context.textAlign = 'center';
+        this.context.textBaseline = 'bottom';
+        this.context.fillText(text,0,0);
+        this.context.restore();
+    }
+
 
 }
 function clipArc(radius){
