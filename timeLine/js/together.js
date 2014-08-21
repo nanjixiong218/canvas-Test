@@ -11,6 +11,7 @@ var Together = function(stretch ,timeLine){
 };
 Together.prototype = {
     animate : function (StretchBegin,StretchEnd,sDir,timeLineBegin,timeLineEnd,tDir,text,aDir){
+        var isEnd = arguments[8]||false;
         var radius = sDir==1?StretchBegin:StretchEnd;
         var x = tDir==1?timeLineBegin:timeLineEnd;
         var alp = aDir==1?0:1;
@@ -80,7 +81,7 @@ Together.prototype = {
 
             if(ifDo){
                 that.context.save();
-                that.stretch.drawAnimationFrame(radius);
+                that.stretch.drawAnimationFrame(radius,isEnd);
                 that.context.restore();
                 that.timeLine.strokeAll(x,that.timeLine.y-60);
                 that.drawText(text,alp);
