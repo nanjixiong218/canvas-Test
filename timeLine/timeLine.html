@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
         <meta charset="utf-8"/>
@@ -8,7 +8,14 @@
 		<script src="js/drawStretch.js"></script>
 		<script src="js/together.js"></script>
         <style type="text/css">
+            *{
+                margin:0;
+                padding:0;
+            }
             canvas{
+                position:absolute;
+                left:0;
+                top:0;
                 width:100%;
                 height:100%;
             }
@@ -17,46 +24,52 @@
             window.onload = function (){
                 var canvas = document.getElementById('mycanvas');
                 canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight-5;
+                canvas.height = window.innerHeight;
                 var context = canvas.getContext('2d');
 
                 together();
                 function together(){
-
-
                     var timePoints = ['初始','无知','无畏','已知','惶恐'];
                     var image = new Image();
                     image.src = 'image/me.jpg';
                     image.onload = function (){
-                        var timeLine = new TimeLine(canvas,context,'red',100,540,800,6,image,timePoints);
+                        //这里传的是圆点位置，总长度，线宽，头像和文字点数组
+                        var timeLine = new TimeLine(canvas,context,'red',100,540,canvas.width - 200,6,image,timePoints);
+                        //这里传的是头像的位置
                         timeLine.strokeAll(85,480);
+                        context.save();
+                        context.font="oblique bold 64px serif";
+                        context.fillStyle = "green";
+                        context.textAlign = 'center';
+                        context.fillText("请按左右键进行动画效果！",canvas.width/2,canvas.height/2);
+                        context.restore();
                         var stretch = new Stretch(canvas,context);
                         var together = new Together(stretch,timeLine);
+                        //path存储每一步的动作
                         var path = [];
                         path.push(function(dir){
                             together.animate(0,0,dir,timeLine.pointsPosition[0].x-15,timeLine.pointsPosition[0].x-15,dir,"一开始的时候我的世界一片黑暗",dir);
                         });
                         path.push(function(dir){
                             var keepPoint = dir==1?0:1;
-                            var keepRadius = dir==1?0:50;
+                            var keepRadius = dir==1?0:20;
                             together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"一开始的时候我的世界一片黑暗",0);
                             setTimeout(function(){
-                                together.animate(0,50,dir,timeLine.pointsPosition[0].x-15,timeLine.pointsPosition[1].x-15,dir,"然后学习了一些基本知识",dir);
+                                together.animate(0,20,dir,timeLine.pointsPosition[0].x-15,timeLine.pointsPosition[1].x-15,dir,"然后学习了一些基本知识",dir);
                             },1000);
                         });
                         path.push(function(dir){
                             var keepPoint = dir==1?1:2;
-                            var keepRadius = dir==1?50:100;
+                            var keepRadius = dir==1?20:50;
                             together.animate(keepRadius,keepRadius,dir,timeLine.pointsPosition[keepPoint].x-15,timeLine.pointsPosition[keepPoint].x-15,dir,"然后学习了一些基本知识",0);
                             setTimeout(function(){
-                                together.animate(50,100,dir,timeLine.pointsPosition[1].x-15,timeLine.pointsPosition[2].x-15,dir,"学到了一定阶段以为自己懂了很多，开始了因为无知的无谓……",dir);
+                                together.animate(20,50,dir,timeLine.pointsPosition[1].x-15,timeLine.pointsPosition[2].x-15,dir,"学到了一定阶段以为自己懂了很多，开始了因为无知的无谓……",dir);
                             },1000);
                         });
                         var now = -1;
+                        //通过dir控制左右移动
                         var move = function(dir){
-
                             if(dir==0) {
-
                                 if(now<0) return;
                                 path[now](dir);
                                 now--;
@@ -110,7 +123,6 @@
                         };
                     };
                 }
-
             };
 
 		</script>

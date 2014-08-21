@@ -12,6 +12,7 @@ var Stretch = function(canvas,context){
 
 Stretch.prototype = {
     drawText:drawText,
+    drawRadiusText:drawRadiusText,
     clipArc:clipArc,
     drawBackGround:drawBackGround,
     fillCanvas:fillCanvas,
@@ -21,11 +22,24 @@ Stretch.prototype = {
 };
 
 
-function drawText(text){
-    this.context.font = "32px red"
+function drawText(){
+    this.context.font = "8px red";
+    this.context.fillStyle = 'black';
     this.context.textAlign = 'center';
     this.context.textBaseline = 'middle';
-    this.context.fillText(text,this.canvas.width/2,this.canvas.height/2);
+
+    this.context.fillText("html",this.mid.x,this.mid.y);
+    this.drawRadiusText("javascript",20,Math.PI/4);
+}
+function drawRadiusText(text,r,angle){
+    this.context.save();
+    this.context.translate(this.mid.x + r*Math.cos(angle),this.mid.y - r*Math.sin(angle));
+    this.context.rotate(Math.PI/2-angle);
+    this.context.textAlign = 'center';
+    this.context.textBaseline = 'bottom';
+    this.context.fillText(text,0,0);
+    this.context.restore();
+
 }
 function clipArc(radius){
     this.context.beginPath();
@@ -36,7 +50,7 @@ function clipArc(radius){
 
 function drawBackGround(){
     this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
-    this.drawText("HTML5");
+    this.drawText();
 }
 function fillCanvas(color){
     this.context.fillStyle = color;

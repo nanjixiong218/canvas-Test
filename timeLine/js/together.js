@@ -106,7 +106,7 @@ Together.prototype = {
         this.context.fillStyle = 'rgba(0,255,0,'+alp+')';
         this.context.textAlign = 'center';
 
-        this.context.fillText(text,this.canvas.width/2,30);
+        this.context.fillText(text,this.canvas.width/2,80);
         this.context.restore();
     }
 };
