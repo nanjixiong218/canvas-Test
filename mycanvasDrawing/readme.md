@@ -5,4 +5,4 @@
 * 画笔功能没实现好，拖拽目前也只能拖拽多边形，功能简单，也没有做很多测试，学习娱乐只用。
 
 ##项目演示地址：
-[演示地址](http://www.shadowvip.com/static/painting.html);
+[演示地址](http://www.shadowvip.com/static/painting.html)
