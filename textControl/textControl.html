@@ -21,6 +21,7 @@
             var context = canvas.getContext("2d");
             var text;
             var baseFont;
+            var textHeight;
             var dragging = false;
             var which = undefined;
             var mouseDown ;
@@ -45,6 +46,7 @@
                     scale = (loc.x - mouseDown.x)/100;
 
                     text.fontSize = (1+scale)*baseFont;
+                    text.textHeight = (1+scale)*textHeight;
                     context.clearRect(0,0,canvas.width,canvas.height);
                     text.drawAll();
                 },
@@ -63,6 +65,7 @@
                     var loc = windowToCanvas(canvas, e.clientX, e.clientY);
                     mouseDown = loc;
                     baseFont = text.fontSize;
+                    textHeight = text.textHeight;
                     /*尼玛，isPointInPath太牛逼了，不需要经过坐标转换,坑死我了！
                     loc = {
                         x:loc.x - canvas.width/2,
