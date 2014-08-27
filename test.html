@@ -14,20 +14,12 @@
 		    window.onload = function (){
                 var canvas = document.getElementById("mycanvas");
                 var context = canvas.getContext("2d");
-                context.strokeRect(100,100,100,100);
+                context.translate(100,100);
                 context.beginPath();
+                context.rect(-100,-100,200,200);
+                context.closePath();
+                console.log(context.isPointInPath(200,200));
 
-                context.moveTo(100,120);
-                //context.lineTo(100,500);
-                context.arcTo(100,100,120,100,20);
-                context.stroke();
-                context.beginPath();
-                context.moveTo(300,300);
-                context.lineTo(600,300);
-                context.lineTo(600,600);
-                context.lineTo(300,600);
-                context.lineTo(300,300);
-                context.stroke();
             }
 		</script>
 	</head>
