@@ -10,8 +10,9 @@ function windowToCanvas (canvas,x,y){
     };
 }
 
-function textControl (canvas,text,x,y,angle) {
+function textControl (canvas,text,x,y,fontSize,angle) {
     this.funcImageMargin = 10;
+    this.fontSize = fontSize;
     this.x = x || this.canvas.width/2;
     this.y = y || this.canvas.height/2;
     this.angle = angle || 0 ;
@@ -37,9 +38,10 @@ textControl.prototype = {
 
     },
     drawText : function () {
-
+        this.context.font = this.fontSize+"px red";
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
+        this.textWidth =  this.context.measureText(this.text).width;
         this.context.fillText(this.text,0,0);
     },
     drawHelpRect : function () {
@@ -47,6 +49,7 @@ textControl.prototype = {
         this.context.strokeRect(0 - width/2,0 - this.textHeight/2,width,this.textHeight);
     },
     setPoints : function () {
+        this.points = [];
         var leftTop ={
             x:0 - this.textWidth/2 - this.funcImageMargin,
             y:0 - this.textHeight/2 - this.funcImageMargin
@@ -67,6 +70,7 @@ textControl.prototype = {
     },
     drawFuncImg : function () {
         this.setPoints();
+        this.funcImages = [];
         var that = this;
         this.points.forEach(function(ele,i){
             var funcImg = new FuncImg(that.canvas,ele.x,ele.y,20,20,that.angle);
@@ -100,6 +104,7 @@ FuncImg.prototype = {
     isInPath : function (x,y) {
         var result;
         this.context.save();
+
         this.context.translate(this.x,this.y);
         this.context.rotate(-this.angle);
         /*

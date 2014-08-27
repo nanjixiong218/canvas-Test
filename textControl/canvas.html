@@ -20,31 +20,79 @@
             var canvas = document.getElementById("myCanvas");
             var context = canvas.getContext("2d");
             var text;
+            var baseFont;
+            var dragging = false;
+            var which = undefined;
+            var mouseDown ;
+
+            var funcs = {
+                move : function (loc) {
+                    context.clearRect(0,0,canvas.width,canvas.height);
+                    text.x = loc.x;
+                    text.y = loc.y;
+                    text.drawAll();
+                },
+                rotate : function (loc) {
+                    console.log('rotate');
+                    context.clearRect(0,0,canvas.width,canvas.height);
+                    var xLen = loc.x - text.x;
+                    var yLen = loc.y - text.y;
+                    text.angle = Math.atan(yLen/xLen);
+                    text.drawAll();
+                },
+                scale : function (loc) {
+                    console.log('scale');
+                    scale = (loc.x - mouseDown.x)/100;
+
+                    text.fontSize = (1+scale)*baseFont;
+                    context.clearRect(0,0,canvas.width,canvas.height);
+                    text.drawAll();
+                },
+                delete : function () {
+                    console.log('del');
+                    context.clearRect(0,0,canvas.width,canvas.height);
+                }
+            };
             input.onkeyup = function () {
-                text = new textControl(canvas,this.value,canvas.width/2,canvas.height/2,0);
+                text = new textControl(canvas,this.value,canvas.width/2,canvas.height/2,32,0);
                 context.clearRect(0,0,canvas.width,canvas.height);
                 text.drawAll();
             };
-            canvas.onmousemove = function (e) {
+            canvas.onmousedown = function (e) {
                 if(text) {
                     var loc = windowToCanvas(canvas, e.clientX, e.clientY);
-                    /*尼玛，isPointInPath太牛逼了，不需要经过坐标转换
+                    mouseDown = loc;
+                    baseFont = text.fontSize;
+                    /*尼玛，isPointInPath太牛逼了，不需要经过坐标转换,坑死我了！
                     loc = {
                         x:loc.x - canvas.width/2,
                         y:loc.y - canvas.height/2
                     };
                     */
-                    text.funcImages.forEach(function (funcImg) {
+                    text.funcImages.forEach(function (funcImg,index) {
                         context.save();
-                        context.translate(canvas.width/2,canvas.height/2);
-                        context.rotate(0);
+                        context.translate(text.x,text.y);
+                        context.rotate(text.angle);
                         if (funcImg.isInPath(loc.x, loc.y)) {
-                            alert("in");
+                            dragging  = true;
+                            var funcs = ['move','rotate','scale','delete'];
+                            which = funcs[index];
                         }
                         context.restore();
                     });
 
                 }
+            };
+
+            canvas.onmousemove = function (e) {
+                if(dragging&&which) {
+                    var loc = windowToCanvas(canvas, e.clientX, e.clientY);
+
+                    funcs[which](loc);
+                }
+            };
+            canvas.onmouseup = function () {
+                dragging = false;
             }
         }
     </script>
