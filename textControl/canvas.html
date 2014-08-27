@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<head>
+        <meta charset="UTF-8">
+        <title>textControl</title>
+		<script src="js/textControl.js"></script>
+
+
+	</head>
+	<body>
+        <textarea id = "inputText" type="text" placeholder="输入字符"></textarea>
+		<canvas id="myCanvas" width="1000px" height="600px">
+
+		</canvas>
+
+	</body>
+    <script type="text/javascript">
+        window.onload = function () {
+            var input = document.getElementById("inputText");
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+
+            input.onkeyup = function () {
+                var con = new textControl(canvas,this.value);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                con.drawAll();
+            };
+        }
+    </script>
+</html>
